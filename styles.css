@@ -1,0 +1,12 @@
+body {
+  font-family: sans-serif;
+  margin: 3rem;
+}
+
+.container {
+  display: flex;
+}
+
+.container > div {
+  flex: 1;
+}

@@ -8,58 +8,73 @@ const promises = urls.map( url => {
     .then( response => response.json())
 });
 
-const renderPeople = (people)=> {
-  const div = document.querySelector('#people');
-  let html = people.results.map( person => {
+const renderData = (endpoint, data, itemRenderer)=> {
+  const div = document.querySelector(`#${ endpoint }`);
+  let html = data.results.map( item => {
     return `
       <li>
-        ${ person.name }
+        ${ itemRenderer( item )}
       </li>
     `;
   }).join('');
-  html = `<h2>People</h2><ul>${html}</ul>`;
+  html = `<h2>${endpoint}</h2><ul>${html}</ul>`;
   div.innerHTML = html;
+};
+
+const renderPeople = (people)=> {
+  renderData(
+    'people',
+    people,
+    function(person){
+      return `
+          The name is: ${ person.name }
+          <br />
+          Has appeared in ${ person.films.length } films.
+      `;
+    }
+  );
 };
 
 const renderFilms = (films)=> {
-  const div = document.querySelector('#films');
-  let html = films.results.map( film => {
-    return `
-      <li>
-        ${ film.title }
-      </li>
-    `;
-  }).join('');
-  html = `<h2>Films</h2><ul>${html}</ul>`;
-  div.innerHTML = html;
-
+  renderData(
+    'films',
+    films,
+    (film)=> {
+      return `
+        <b>${ film.title }</b>
+        <br />
+        Released On ${ ['Su', 'Mo', 'Tues', 'Wed', 'Thurs', 'Friday', 'Sat'][((new Date(film.release_date)).getDay())] } ${ film.release_date}
+      `;
+    }
+  );
 };
 
 const renderVehicles = (vehicles)=> {
-  const div = document.querySelector('#vehicles');
-  let html = vehicles.results.map( vehicle => {
-    return `
-      <li>
+  renderData(
+    'vehicles',
+    vehicles,
+    (vehicle)=> {
+      return `
         ${ vehicle.name }
-      </li>
-    `;
-  }).join('');
-  html = `<h2>Vehicles</h2><ul>${html}</ul>`;
-  div.innerHTML = html;
+        <br />
+        ${ vehicle.manufacturer }
+      `;
+    }
+  );
 };
 
 const renderStarships = (starships)=> {
-  const div = document.querySelector('#starships');
-  let html = starships.results.map( starship => {
-    return `
-      <li>
+  renderData(
+    'starships',
+    starships,
+    (starship)=> {
+      return `
         ${ starship.name }
-      </li>
-    `;
-  }).join('');
-  html = `<h2>Starships</h2><ul>${html}</ul>`;
-  div.innerHTML = html;
-
+        <br />
+        ${ starship.manufacturer }
+      `;
+    }
+  );
 };
 
 Promise.all(promises)
